@@ -37,38 +37,6 @@ fi
 
 # Files to be extracted
 
-# These libraries are not added as dependencies of other libraries, as they
-# would appear almost everywhere.
-#
-# liblog.so provides "__xlog_buf_printf".
-#
-# libcutils.so from MTK seems to use and therefore load "__xlog_buf_printf";
-# libsrv_init.so and libsrv_um.so use "__xlog_buf_printf" too, but they do not
-# link against liblog.so. They both link against libcutils.so, thus loading
-# "__xlog_buf_printf" implicitly through it. However, if the standard
-# libcutils.so is used it will not load "__xlog_buf_printf", which would cause
-# the load of libsrv_init.so and libsrv_um.so to fail, therefore preventing the
-# GPU acceleration from being used.
-BASE_LIBRARIES_MODIFIED_BY_MTK=" \
-    system/lib/liblog.so \
-    system/lib/libcutils.so"
-
-
-
-
-
-
-# logcat requires "android_log_setColoredOutput", which is not provided by the
-# MTK version. Therefore, if liblog.so from MTK is used, logcat from MTK has to
-# be used too (or logcat has to be modified to not to ask for colored output).
-BASE_EXECUTABLES_MODIFIED_BY_MTK=" \
-    system/bin/logcat"
-
-
-
-
-
-
 libpvr2d_so_DEPENDENCIES=" \
     system/vendor/lib/libsrv_um.so"
 
@@ -160,8 +128,6 @@ GRAPHICS=" \
 
 
 ALL_FILES=" \
-    $BASE_LIBRARIES_MODIFIED_BY_MTK \
-    $BASE_EXECUTABLES_MODIFIED_BY_MTK \
     $GRAPHICS"
 
 

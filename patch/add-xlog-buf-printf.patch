@@ -1,0 +1,29 @@
+diff --git a/liblog/logd_write.c b/liblog/logd_write.c
+index 2e663f4..f730fef 100644
+--- a/liblog/logd_write.c
++++ b/liblog/logd_write.c
+@@ -426,3 +426,24 @@ int __android_log_btwrite(int32_t tag, char type, const void *payload,
+ 
+     return write_to_log(LOG_ID_EVENTS, vec, 3);
+ }
++
++/*
++ * __xlog_buf_printf is based on the commit 32eb3e0986 from the system/core
++ * repository in CyanogenMod 11.0.
++ */
++struct xlog_record {
++    const char *tag_str;
++    const char *fmt_str;
++    int prio;
++};
++
++int __attribute__((weak)) __xlog_buf_printf(int bufid, const struct xlog_record *xlog_record, ...) {
++    int err;
++    va_list args;
++
++    va_start(args, xlog_record);
++    err = __android_log_vprint(xlog_record->prio, xlog_record->tag_str, xlog_record->fmt_str, args);
++    va_end(args);
++
++    return err;
++}
