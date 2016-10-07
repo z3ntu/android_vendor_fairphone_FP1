@@ -31,9 +31,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	mknod-fp1
 
-# EGL configuration to use the proprietary graphics blobs.
-BOARD_EGL_CFG := vendor/fairphone/fp1/config/egl.cfg
-
 # The proprietary graphics blobs support OpenGL ES 2.0.
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=131072
