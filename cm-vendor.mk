@@ -41,4 +41,16 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.softwaregl=false
 
+# By default, eglCreateWindowSurface (in
+# "frameworks/native/opengl/libs/EGL/eglApi.cpp") picks the native window's
+# buffers format from a specific set of formats instead of setting it to the
+# EGL_NATIVE_VISUAL_ID format from the EGL config (as was done before Android
+# 4.4). Unfortunately, this causes a mismatch between window and config pixel
+# formats when using the proprietary OpenGL ES libraries from MediaTek, which in
+# the end causes a failure in the graphics system. This issue seems to occur too
+# with other proprietary OpenGL ES libraries, so the
+# BOARD_EGL_WORKAROUND_BUG_10194508 build parameter can be enabled to revert the
+# eglCreateWindowSurface behavior to the old one.
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+
 endif
