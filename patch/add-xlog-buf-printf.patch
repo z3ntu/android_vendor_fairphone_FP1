@@ -1,12 +1,12 @@
 diff --git a/liblog/logd_write.c b/liblog/logd_write.c
-index 2e663f4..f730fef 100644
+index 9e76a8e..07b1c82 100644
 --- a/liblog/logd_write.c
 +++ b/liblog/logd_write.c
-@@ -426,3 +426,24 @@ int __android_log_btwrite(int32_t tag, char type, const void *payload,
+@@ -465,4 +465,25 @@ void __attribute__((weak)) __xlog_buf_printf(int bufid, const struct xlog_record
  
-     return write_to_log(LOG_ID_EVENTS, vec, 3);
+     return 0;
  }
-+
++#else
 +/*
 + * __xlog_buf_printf is based on the commit 32eb3e0986 from the system/core
 + * repository in CyanogenMod 11.0.
@@ -27,3 +27,4 @@ index 2e663f4..f730fef 100644
 +
 +    return err;
 +}
+ #endif
