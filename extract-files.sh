@@ -198,11 +198,31 @@ NVRAM=" \
 
 
 
+SENSORS_HAL=" \
+    system/lib/hw/sensors.default.so"
+
+
+
+SENSORS_MAGNETOMETER_DAEMON=" \
+    system/bin/memsicd3416x"
+
+
+
+SENSORS=" \
+    $SENSORS_HAL \
+    $SENSORS_MAGNETOMETER_DAEMON"
+
+
+
+
+
+
 ALL_FILES=" \
     $BASE_LIBRARIES_MODIFIED_BY_MTK \
     $BASE_EXECUTABLES_MODIFIED_BY_MTK \
     $GRAPHICS \
-    $NVRAM"
+    $NVRAM \
+    $SENSORS"
 
 
 
