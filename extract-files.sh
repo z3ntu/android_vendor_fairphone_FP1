@@ -159,10 +159,50 @@ GRAPHICS=" \
 
 
 
+libnvram_so_DEPENDENCIES=" \
+    system/lib/libcustom_nvram.so"
+
+libfile_op_so_DEPENDENCIES=" \
+    $libnvram_so_DEPENDENCIES \
+    system/lib/libnvram.so \
+    system/lib/libcustom_nvram.so"
+
+libhwm_so_DEPENDENCIES=" \
+    $libnvram_so_DEPENDENCIES \
+    system/lib/libnvram.so \
+    $libfile_op_so_DEPENDENCIES \
+    system/lib/libfile_op.so"
+
+libnvram_daemon_callback_so_DEPENDENCIES=" \
+    system/lib/libcustom_nvram.so \
+    $libnvram_so_DEPENDENCIES \
+    system/lib/libnvram.so"
+
+nvram_daemon_DEPENDENCIES=" \
+    $libnvram_so_DEPENDENCIES \
+    system/lib/libnvram.so \
+    system/lib/libcustom_nvram.so \
+    $libfile_op_so_DEPENDENCIES \
+    system/lib/libfile_op.so \
+    $libhwm_so_DEPENDENCIES \
+    system/lib/libhwm.so \
+    $libnvram_daemon_callback_so_DEPENDENCIES \
+    system/lib/libnvram_daemon_callback.so"
+
+NVRAM=" \
+    $nvram_daemon_DEPENDENCIES \
+    system/bin/nvram_daemon"
+
+
+
+
+
+
 ALL_FILES=" \
     $BASE_LIBRARIES_MODIFIED_BY_MTK \
     $BASE_EXECUTABLES_MODIFIED_BY_MTK \
-    $GRAPHICS"
+    $GRAPHICS \
+    $NVRAM"
 
 
 
