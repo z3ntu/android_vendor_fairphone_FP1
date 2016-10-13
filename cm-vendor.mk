@@ -48,6 +48,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.softwaregl=false
 
+# Wrapper for the proprietary MediaTek GPS HAL module, needed to adjust its API
+# to the standard GPS HAL module API.
+PRODUCT_PACKAGES += \
+	gps.fp1
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, the FOSS device tree plus this proprietary vendor tree do not
