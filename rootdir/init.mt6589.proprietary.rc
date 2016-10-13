@@ -1,0 +1,13 @@
+on post-fs
+    # /dev/devmap, which is provided by devinfo.ko, is used by pvrsrvctl.
+    insmod /system/lib/modules/devinfo.ko
+
+    exec /sbin/mknod-fp1 /dev/devmap c 196 0
+
+
+
+service pvrsrvctl /system/vendor/bin/pvrsrvctl --start
+    class main
+    user root
+    group root
+    oneshot

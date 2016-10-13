@@ -37,7 +37,132 @@ fi
 
 # Files to be extracted
 
-ALL_FILES=""
+# These libraries are not added as dependencies of other libraries, as they
+# would appear almost everywhere.
+#
+# liblog.so provides "__xlog_buf_printf".
+#
+# libcutils.so from MTK seems to use and therefore load "__xlog_buf_printf";
+# libsrv_init.so and libsrv_um.so use "__xlog_buf_printf" too, but they do not
+# link against liblog.so. They both link against libcutils.so, thus loading
+# "__xlog_buf_printf" implicitly through it. However, if the standard
+# libcutils.so is used it will not load "__xlog_buf_printf", which would cause
+# the load of libsrv_init.so and libsrv_um.so to fail, therefore preventing the
+# GPU acceleration from being used.
+BASE_LIBRARIES_MODIFIED_BY_MTK=" \
+    system/lib/liblog.so \
+    system/lib/libcutils.so"
+
+
+
+
+
+
+# logcat requires "android_log_setColoredOutput", which is not provided by the
+# MTK version. Therefore, if liblog.so from MTK is used, logcat from MTK has to
+# be used too (or logcat has to be modified to not to ask for colored output).
+BASE_EXECUTABLES_MODIFIED_BY_MTK=" \
+    system/bin/logcat"
+
+
+
+
+
+
+libpvr2d_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+gralloc_mt6589_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libpvr2d_so_DEPENDENCIES \
+    system/vendor/lib/libpvr2d.so \
+    system/lib/libion.so"
+
+GRALLOC_HAL=" \
+    $gralloc_mt6589_so_DEPENDENCIES \
+    system/vendor/lib/hw/gralloc.mt6589.so"
+
+
+
+libsrv_init_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+pvrsrvctl_DEPENDENCIES=" \
+    $libsrv_init_so_DEPENDENCIES \
+    system/vendor/lib/libsrv_init.so"
+
+GRAPHICS_SETUP=" \
+    $pvrsrvctl_DEPENDENCIES \
+    system/vendor/bin/pvrsrvctl"
+
+
+
+libIMGegl_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+libEGL_mtk_so_DEPENDENCIES=" \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so"
+
+libGLESv1_CM_mtk_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so \
+    system/vendor/lib/libusc.so"
+
+libGLESv2_mtk_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so"
+
+GRAPHICS_OPENGL=" \
+    $libEGL_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libEGL_mtk.so \
+    $libGLESv1_CM_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libGLESv1_CM_mtk.so \
+    $libGLESv2_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libGLESv2_mtk.so"
+
+
+
+libglslcompiler_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    system/vendor/lib/libusc.so"
+
+libpvrANDROID_WSEGL_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+libPVRScopeServices_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+GRAPHICS_OTHER=" \
+    $libglslcompiler_so_DEPENDENCIES \
+    system/vendor/lib/libglslcompiler.so \
+    $libpvr2d_so_DEPENDENCIES \
+    system/vendor/lib/libpvr2d.so \
+    $libpvrANDROID_WSEGL_so_DEPENDENCIES \
+    system/vendor/lib/libpvrANDROID_WSEGL.so \
+    system/vendor/lib/libusc.so \
+    $libPVRScopeServices_so_DEPENDENCIES \
+    system/vendor/lib/libPVRScopeServices.so"
+
+
+
+GRAPHICS=" \
+    $GRALLOC_HAL
+    $GRAPHICS_SETUP \
+    $GRAPHICS_OPENGL \
+    $GRAPHICS_OTHER"
+
+
+
+
+
+
+ALL_FILES=" \
+    $BASE_LIBRARIES_MODIFIED_BY_MTK \
+    $BASE_EXECUTABLES_MODIFIED_BY_MTK \
+    $GRAPHICS"
 
 
 
