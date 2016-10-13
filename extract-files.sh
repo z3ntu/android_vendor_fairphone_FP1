@@ -217,12 +217,69 @@ SENSORS=" \
 
 
 
+WIRELESS_COMBO_CHIP_FIRMWARE=" \
+    system/etc/firmware/mt6628_ant_m1.cfg \
+    system/etc/firmware/mt6628_patch_e1_hdr.bin \
+    system/etc/firmware/mt6628_patch_e2_0_hdr.bin \
+    system/etc/firmware/mt6628_patch_e2_1_hdr.bin \
+    system/etc/firmware/WMT.cfg"
+
+
+
+WIRELESS_COMBO_CHIP_LAUNCHER=" \
+    system/bin/6620_launcher"
+
+
+
+WIRELESS_COMBO_CHIP=" \
+    $WIRELESS_COMBO_CHIP_FIRMWARE \
+    $WIRELESS_COMBO_CHIP_LAUNCHER"
+
+
+
+
+
+
+GPS_HAL=" \
+    system/lib/hw/gps.default.so"
+
+
+
+libnvram_so_DEPENDENCIES=" \
+    system/lib/libcustom_nvram.so"
+
+libmnlp_mt6628_DEPENDENCIES=" \
+    $libnvram_so_DEPENDENCIES \
+    system/lib/libnvram.so"
+
+# mnld is a daemon used by "system/lib/hw/gps.default.so". It is not a hardcoded
+# dependency, but launched through an init service.
+# libmnlp_mt6628 is a daemon used by "system/xbin/mnld". It is not a hardcoded
+# dependency, but selected and launched dynamically based on the actual chipset.
+GPS_DAEMON=" \
+    system/xbin/mnld \
+    $libmnlp_mt6628_DEPENDENCIES \
+    system/xbin/libmnlp_mt6628"
+
+
+
+GPS=" \
+    $GPS_HAL \
+    $GPS_DAEMON"
+
+
+
+
+
+
 ALL_FILES=" \
     $BASE_LIBRARIES_MODIFIED_BY_MTK \
     $BASE_EXECUTABLES_MODIFIED_BY_MTK \
     $GRAPHICS \
     $NVRAM \
-    $SENSORS"
+    $SENSORS \
+    $WIRELESS_COMBO_CHIP \
+    $GPS"
 
 
 
