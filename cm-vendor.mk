@@ -23,4 +23,25 @@ else
 # Copy the proprietary blobs.
 $(call inherit-product, vendor/fairphone/fp1/proprietary/blobs.mk)
 
+PRODUCT_COPY_FILES += \
+	vendor/fairphone/fp1/rootdir/init.mt6589.proprietary.rc:root/init.mt6589.proprietary.rc
+
+# Add "mknod-fp1" command, as it is needed by the init.mt6589.proprietary.rc
+# file of the boot image.
+PRODUCT_PACKAGES += \
+	mknod-fp1
+
+# EGL configuration to use the proprietary graphics blobs.
+BOARD_EGL_CFG := vendor/fairphone/fp1/config/egl.cfg
+
+# The proprietary graphics blobs support OpenGL ES 2.0.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.opengles.version=131072
+
+# Explicitly declare that a software implementation of OpenGL ES is not being
+# used to prevent the FOSS device tree to enable it.
+# This is not a standard property; the system must be patched to support it.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.softwaregl=false
+
 endif

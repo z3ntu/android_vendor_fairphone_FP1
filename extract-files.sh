@@ -37,7 +37,98 @@ fi
 
 # Files to be extracted
 
-ALL_FILES=""
+libpvr2d_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+gralloc_mt6589_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libpvr2d_so_DEPENDENCIES \
+    system/vendor/lib/libpvr2d.so \
+    system/lib/libion.so"
+
+GRALLOC_HAL=" \
+    $gralloc_mt6589_so_DEPENDENCIES \
+    system/vendor/lib/hw/gralloc.mt6589.so"
+
+
+
+libsrv_init_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+pvrsrvctl_DEPENDENCIES=" \
+    $libsrv_init_so_DEPENDENCIES \
+    system/vendor/lib/libsrv_init.so"
+
+GRAPHICS_SETUP=" \
+    $pvrsrvctl_DEPENDENCIES \
+    system/vendor/bin/pvrsrvctl"
+
+
+
+libIMGegl_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+libEGL_mtk_so_DEPENDENCIES=" \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so"
+
+libGLESv1_CM_mtk_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so \
+    system/vendor/lib/libusc.so"
+
+libGLESv2_mtk_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    $libIMGegl_so_DEPENDENCIES \
+    system/vendor/lib/libIMGegl.so"
+
+GRAPHICS_OPENGL=" \
+    $libEGL_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libEGL_mtk.so \
+    $libGLESv1_CM_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libGLESv1_CM_mtk.so \
+    $libGLESv2_mtk_so_DEPENDENCIES \
+    system/vendor/lib/egl/libGLESv2_mtk.so"
+
+
+
+libglslcompiler_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so \
+    system/vendor/lib/libusc.so"
+
+libpvrANDROID_WSEGL_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+libPVRScopeServices_so_DEPENDENCIES=" \
+    system/vendor/lib/libsrv_um.so"
+
+GRAPHICS_OTHER=" \
+    $libglslcompiler_so_DEPENDENCIES \
+    system/vendor/lib/libglslcompiler.so \
+    $libpvr2d_so_DEPENDENCIES \
+    system/vendor/lib/libpvr2d.so \
+    $libpvrANDROID_WSEGL_so_DEPENDENCIES \
+    system/vendor/lib/libpvrANDROID_WSEGL.so \
+    system/vendor/lib/libusc.so \
+    $libPVRScopeServices_so_DEPENDENCIES \
+    system/vendor/lib/libPVRScopeServices.so"
+
+
+
+GRAPHICS=" \
+    $GRALLOC_HAL
+    $GRAPHICS_SETUP \
+    $GRAPHICS_OPENGL \
+    $GRAPHICS_OTHER"
+
+
+
+
+
+
+ALL_FILES=" \
+    $GRAPHICS"
 
 
 
