@@ -1,0 +1,30 @@
+diff --git a/liblog/logd_write.c b/liblog/logd_write.c
+index 9e76a8e..07b1c82 100644
+--- a/liblog/logd_write.c
++++ b/liblog/logd_write.c
+@@ -465,4 +465,25 @@ void __attribute__((weak)) __xlog_buf_printf(int bufid, const struct xlog_record
+ 
+     return 0;
+ }
++#else
++/*
++ * __xlog_buf_printf is based on the commit 32eb3e0986 from the system/core
++ * repository in CyanogenMod 11.0.
++ */
++struct xlog_record {
++    const char *tag_str;
++    const char *fmt_str;
++    int prio;
++};
++
++int __attribute__((weak)) __xlog_buf_printf(int bufid, const struct xlog_record *xlog_record, ...) {
++    int err;
++    va_list args;
++
++    va_start(args, xlog_record);
++    err = __android_log_vprint(xlog_record->prio, xlog_record->tag_str, xlog_record->fmt_str, args);
++    va_end(args);
++
++    return err;
++}
+ #endif

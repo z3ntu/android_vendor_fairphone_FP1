@@ -23,4 +23,34 @@ else
 # Copy the proprietary blobs.
 $(call inherit-product, vendor/fairphone/fp1/proprietary/blobs.mk)
 
+PRODUCT_COPY_FILES += \
+	vendor/fairphone/fp1/rootdir/init.mt6589.proprietary.rc:root/init.mt6589.proprietary.rc
+
+# Add "mknod-fp1" command, as it is needed by the init.mt6589.proprietary.rc
+# file of the boot image.
+PRODUCT_PACKAGES += \
+	mknod-fp1
+
+# The proprietary graphics blobs support OpenGL ES 2.0.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.opengles.version=131072
+
+# Explicitly declare that a software implementation of OpenGL ES is not being
+# used to prevent the FOSS device tree to enable it.
+# This is not a standard property; the system must be patched to support it.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.softwaregl=false
+
+# By default, eglCreateWindowSurface (in
+# "frameworks/native/opengl/libs/EGL/eglApi.cpp") picks the native window's
+# buffers format from a specific set of formats instead of setting it to the
+# EGL_NATIVE_VISUAL_ID format from the EGL config (as was done before Android
+# 4.4). Unfortunately, this causes a mismatch between window and config pixel
+# formats when using the proprietary OpenGL ES libraries from MediaTek, which in
+# the end causes a failure in the graphics system. This issue seems to occur too
+# with other proprietary OpenGL ES libraries, so the
+# BOARD_EGL_WORKAROUND_BUG_10194508 build parameter can be enabled to revert the
+# eglCreateWindowSurface behavior to the old one.
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+
 endif
