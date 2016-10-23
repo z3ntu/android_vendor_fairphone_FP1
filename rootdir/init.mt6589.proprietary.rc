@@ -14,6 +14,7 @@ on post-fs
     insmod /system/lib/modules/mtk_stp_wmt.ko
     insmod /system/lib/modules/mtk_stp_uart.ko
     insmod /system/lib/modules/mtk_stp_gps.ko
+    insmod /system/lib/modules/mtk_wmt_wifi.ko
 
     # Needed by 6620_launcher.
     exec /sbin/mknod-fp1 /dev/stpwmt c 190 0
@@ -26,6 +27,15 @@ on post-fs
 
     chown gps gps /dev/stpgps
     chmod 0660 /dev/stpgps
+
+    # Needed to enable and disable the Wi-Fi.
+    exec /sbin/mknod-fp1 /dev/wmtWifi c 153 0
+
+    # Needed to add and remove the wlan0 and p2p0 net interfaces (the module
+    # does not add the interfaces automatically when loaded, so the module is
+    # kept always loaded and special commands to add and remove the interfaces
+    # are issued when needed).
+    insmod /system/lib/modules/wlan_mt6628.ko
 
 
 
@@ -78,3 +88,12 @@ service mnld /system/xbin/mnld
     group gps nvram misc
     socket mnld stream 660 gps gps
     disabled
+
+
+
+# Helper service to add and remove the wlan0 and p2p0 net interfaces (as the
+# wlan kernel module does not add them automatically when loaded, so the module
+# is kept always loaded and the interfaces are added and removed when needed).
+service wlan_iface_ctrl /system/bin/logwrapper /system/bin/mt6628_wlan_iface_ctrl
+    disabled
+    oneshot

@@ -53,6 +53,18 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	gps.fp1
 
+# Helper command to add and remove the wlan0 and p2p0 net interfaces (as the
+# wlan kernel module does not add them automatically when loaded, so the module
+# is kept always loaded and the interfaces are added and removed when needed).
+PRODUCT_PACKAGES += \
+	mt6628_wlan_iface_ctrl
+
+# Parameters used by the Wi-Fi HAL to launch a system service to add and remove
+# the wlan0 and p2p0 net interfaces when needed.
+WIFI_DRIVER_STATE_CTRL_PROP_NAME := wlan_iface_ctrl
+WIFI_DRIVER_STATE_ON := add
+WIFI_DRIVER_STATE_OFF := remove
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, the FOSS device tree plus this proprietary vendor tree do not
