@@ -222,6 +222,7 @@ WIRELESS_COMBO_CHIP_FIRMWARE=" \
     system/etc/firmware/mt6628_patch_e1_hdr.bin \
     system/etc/firmware/mt6628_patch_e2_0_hdr.bin \
     system/etc/firmware/mt6628_patch_e2_1_hdr.bin \
+    system/etc/firmware/WIFI_RAM_CODE_MT6628 \
     system/etc/firmware/WMT.cfg"
 
 
