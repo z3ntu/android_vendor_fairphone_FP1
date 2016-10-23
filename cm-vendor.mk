@@ -69,6 +69,10 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := wpa_supplicant_8_private_lib_fp1
 
+# The net interface to be used by the Wi-Fi system.
+PRODUCT_PROPERTY_OVERRIDES += \
+	wifi.interface=wlan0
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, the FOSS device tree plus this proprietary vendor tree do not
