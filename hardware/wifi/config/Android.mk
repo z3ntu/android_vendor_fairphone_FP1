@@ -15,7 +15,25 @@
 
 ifeq ($(TARGET_DEVICE),fp1)
 
+
+
 LOCAL_PATH:= $(call my-dir)
+
+
+
+# Copy the android.conf file from external/dhcpcd as the final dhcpcd.conf.
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := ../../../../../../external/dhcpcd/android.conf
+
+LOCAL_MODULE := dhcpcd.conf
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/dhcpcd
+
+include $(BUILD_PREBUILT)
+
+
 
 # Generate the wpa_supplicant.conf from the default template file.
 ifeq ($(WPA_SUPPLICANT_VERSION),VER_0_8_X)
@@ -23,5 +41,7 @@ ifeq ($(WPA_SUPPLICANT_VERSION),VER_0_8_X)
 
     include external/wpa_supplicant_8/wpa_supplicant/wpa_supplicant_conf.mk
 endif
+
+
 
 endif
