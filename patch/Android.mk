@@ -25,6 +25,8 @@ endif
 
 patch-source-tree-for-fp1-vendor:
 	$(call patch-repository,system/core,vendor/fairphone/fp1/patch/add-xlog-buf-printf.patch)
+	$(call patch-repository,system/core,vendor/fairphone/fp1/patch/add-nvram-user.patch)
 
 reverse-patch-source-tree-for-fp1-vendor:
 	$(call reverse-patch-repository,system/core,vendor/fairphone/fp1/patch/add-xlog-buf-printf.patch)
+	$(call reverse-patch-repository,system/core,vendor/fairphone/fp1/patch/add-nvram-user.patch)
