@@ -1,8 +1,8 @@
 diff --git a/include/private/android_filesystem_config.h b/include/private/android_filesystem_config.h
-index 16efe58..f7d2e88 100644
+index 94b26cf..75cf6df 100644
 --- a/include/private/android_filesystem_config.h
 +++ b/include/private/android_filesystem_config.h
-@@ -99,6 +99,8 @@
+@@ -109,6 +109,8 @@
  #define AID_MOT_DLNA      9011  /* DLNA native */
  #endif // MOTOROLA_UIDS
  
@@ -11,11 +11,11 @@ index 16efe58..f7d2e88 100644
  #define AID_MISC          9998  /* access to misc storage */
  #define AID_NOBODY        9999
  
-@@ -175,6 +177,7 @@ static const struct android_id_info android_ids[] = {
+@@ -186,6 +188,7 @@ static const struct android_id_info android_ids[] = {
      { "mot_caif",  AID_MOT_CAIF, },
      { "mot_dlna",  AID_MOT_DLNA, },
  #endif
 +    { "nvram",     AID_NVRAM, },
      { "misc",      AID_MISC, },
      { "nobody",    AID_NOBODY, },
-     { "theme_man", AID_THEMEMAN },
+     { "clat",      AID_CLAT, },
