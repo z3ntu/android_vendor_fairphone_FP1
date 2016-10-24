@@ -166,9 +166,29 @@ NVRAM=" \
 
 
 
+SENSORS_HAL=" \
+    system/lib/hw/sensors.default.so"
+
+
+
+SENSORS_MAGNETOMETER_DAEMON=" \
+    system/bin/memsicd3416x"
+
+
+
+SENSORS=" \
+    $SENSORS_HAL \
+    $SENSORS_MAGNETOMETER_DAEMON"
+
+
+
+
+
+
 ALL_FILES=" \
     $GRAPHICS \
-    $NVRAM"
+    $NVRAM \
+    $SENSORS"
 
 
 

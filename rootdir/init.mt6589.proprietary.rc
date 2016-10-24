@@ -19,3 +19,11 @@ service nvram_daemon /system/bin/nvram_daemon
     user nvram
     group nvram system
     oneshot
+
+
+
+# Magnetometer daemon.
+service memsicd3416x /system/bin/memsicd3416x
+    class main
+    user system
+    group system
