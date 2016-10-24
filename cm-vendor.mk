@@ -31,6 +31,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	mknod-fp1
 
+# Set the include directory for device-specific headers used to override or
+# extend the standard headers.
+TARGET_SPECIFIC_HEADER_PATH := vendor/fairphone/fp1/include/
+
 # EGL configuration to use the proprietary graphics blobs.
 BOARD_EGL_CFG := vendor/fairphone/fp1/config/egl.cfg
 
