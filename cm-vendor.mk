@@ -31,6 +31,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	mknod-fp1
 
+# Set the include directory for device-specific headers used to override or
+# extend the standard headers.
+TARGET_SPECIFIC_HEADER_PATH := vendor/fairphone/fp1/include/
+
 # The proprietary graphics blobs support OpenGL ES 2.0.
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=131072

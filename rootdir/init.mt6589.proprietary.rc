@@ -11,3 +11,11 @@ service pvrsrvctl /system/vendor/bin/pvrsrvctl --start
     user root
     group root
     oneshot
+
+
+
+service nvram_daemon /system/bin/nvram_daemon
+    class main
+    user nvram
+    group nvram system
+    oneshot
