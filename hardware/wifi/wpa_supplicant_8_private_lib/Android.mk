@@ -18,7 +18,10 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES := \
-    external/wpa_supplicant_8/src
+    external/libnl-headers \
+    external/wpa_supplicant_8/src \
+    external/wpa_supplicant_8/src/drivers \
+    external/wpa_supplicant_8/src/utils
 
 LOCAL_SRC_FILES := driver_nl80211_cmd.c
 

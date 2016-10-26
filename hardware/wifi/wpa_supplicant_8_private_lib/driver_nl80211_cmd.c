@@ -26,6 +26,8 @@
 #include <linux/if.h>
 #include <linux/wireless.h>
 
+#include <hardware_legacy/driver_nl80211.h>
+
 #include "drivers/android_drv.h"
 
 #include "utils/common.h"
@@ -36,46 +38,6 @@
 // These files depend on types defined in "utils/common.h".
 #include "drivers/driver.h"
 #include "drivers/linux_ioctl.h"
-
-// Partial copy from "external/wpa_supplicant_8/src/drivers/driver_nl80211.c".
-// wpa_supplicant does not provide a header file with the data structures used
-// in the nl80211 driver. In order to provide the extended commands for Android
-// those structures are needed, so they have to be copied from the
-// "driver_nl80211.c" file. However, to limit the amount of synchronization
-// needed with the original file, the structures are copied only up to the last
-// used field, ignoring the rest of fields in the structure.
-struct netlink_data;
-struct nl_cb;
-struct nl_handle;
-
-struct nl80211_global {
-    struct dl_list interfaces;
-    int if_add_ifindex;
-    struct netlink_data *netlink;
-    struct nl_cb *nl_cb;
-    struct nl_handle *nl;
-    int nl80211_id;
-    int ioctl_sock; /* socket for ioctl() use */
-    // ...
-};
-
-struct i802_bss {
-    struct wpa_driver_nl80211_data *drv;
-    struct i802_bss *next;
-    int ifindex;
-    char ifname[IFNAMSIZ + 1];
-    // ...
-};
-
-struct wpa_driver_nl80211_data {
-    struct nl80211_global *global;
-    struct dl_list list;
-    struct dl_list wiphy_list;
-    char phyname[32];
-    void *ctx;
-    // ...
-};
-// End of partial copy.
 
 int wpa_driver_nl80211_driver_cmd(void* priv, char* cmd, char* buf, size_t buf_len) {
     struct i802_bss* bss = priv;
