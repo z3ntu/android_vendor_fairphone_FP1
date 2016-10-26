@@ -30,4 +30,8 @@ else
     LOCAL_CFLAGS += -DWRAPPED_MODULE_PATH=\"/system/lib/hw/gps.default.so\"
 endif
 
+ifneq ($(MTK_GPS_WRAPPER_GPS_HAL_USES_UINT32_AIDING_DATA),)
+    LOCAL_CFLAGS += -DGPS_HAL_USES_UINT32_AIDING_DATA
+endif
+
 include $(BUILD_SHARED_LIBRARY)

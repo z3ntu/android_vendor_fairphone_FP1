@@ -66,7 +66,10 @@
  * "hardware/libhardware/include/hardware/gps.h" from AOSP 4.2, commit
  * ee43a308b6. The proprietary MediaTek GPS HAL module to be wrapped must be the
  * one from the official Fairphone 1 release for Android 4.2; other proprietary
- * MediaTek GPS HAL modules may not work as intended.
+ * MediaTek GPS HAL modules may not work as intended. Due to being from the
+ * Android 4.2 release this wrapper might have to adapt other elements from the
+ * wrapped module (for example, like the parameter passed to delete_aiding_data,
+ * as it was changed from uint16_t to uint32_t in CyanogenMod 11.0).
  */
 
 #define MEDIATEK_GPS_MAX_SVS 256
@@ -171,7 +174,11 @@ struct mediatek_gps_interface {
     void (*cleanup)(void);
     int (*inject_time)(GpsUtcTime time, int64_t timeReference, int uncertainty);
     int (*inject_location)(double latitude, double longitude, float accuracy);
+#ifdef GPS_HAL_USES_UINT32_AIDING_DATA
+    void (*delete_aiding_data)(uint16_t flags);
+#else
     void (*delete_aiding_data)(GpsAidingData flags);
+#endif
     int (*set_position_mode)(GpsPositionMode mode, GpsPositionRecurrence recurrence,
          uint32_t min_interval, uint32_t preferred_accuracy, uint32_t preferred_time);
     const void* (*get_extension)(const char* name);
@@ -224,6 +231,26 @@ static int gps_interface_init(GpsCallbacks* callbacks) {
     return current_gps_interface_wrapper->wrapped_gps_interface->init(&current_mediatek_gps_callbacks);
 }
 
+#ifdef GPS_HAL_USES_UINT32_AIDING_DATA
+static void gps_interface_delete_aiding_data(GpsAidingData flags) {
+    ALOGV("Deleting wrapped aiding data");
+
+    // GpsAidingData was changed from uint16_t to uint32_t in CyanogenMod 11.0
+    // to add room for extra flags. All the original flags in the lower bits
+    // have the same values, except for GPS_DELETE_CELLDB_INFO, which changed
+    // from 0x8000 to 0x0800.
+    uint16_t flags_uint16 = (uint16_t) (flags & 0x000007FF);
+    if (flags & 0x00000800) {
+        flags_uint16 |= 0x8000;
+    }
+    if (flags == 0xFFFFFFFF) {
+        flags_uint16 = 0xFFFF;
+    }
+
+    current_gps_interface_wrapper->wrapped_gps_interface->delete_aiding_data(flags_uint16);
+}
+#endif
+
 struct mediatek_gps_device_t {
     struct hw_device_t common;
 
@@ -246,7 +273,8 @@ static const GpsInterface* gps_device_get_gps_interface(struct gps_device_t* dev
     struct gps_interface_wrapper* interface_wrapper = malloc(sizeof(struct gps_interface_wrapper));
     memset(interface_wrapper, 0, sizeof(struct gps_interface_wrapper));
 
-    // Only the init function has to be overriden in the GPS interface.
+    // Only the init and (optionally) the delete_aiding_data functions have to
+    // be overriden in the GPS interface.
     interface_wrapper->gps_interface.size = sizeof(struct mediatek_gps_interface);
     interface_wrapper->gps_interface.init = &gps_interface_init;
     interface_wrapper->gps_interface.start = wrapped_gps_interface->start;
@@ -254,7 +282,11 @@ static const GpsInterface* gps_device_get_gps_interface(struct gps_device_t* dev
     interface_wrapper->gps_interface.cleanup = wrapped_gps_interface->cleanup;
     interface_wrapper->gps_interface.inject_time = wrapped_gps_interface->inject_time;
     interface_wrapper->gps_interface.inject_location = wrapped_gps_interface->inject_location;
+#ifdef GPS_HAL_USES_UINT32_AIDING_DATA
+    interface_wrapper->gps_interface.delete_aiding_data = &gps_interface_delete_aiding_data;
+#else
     interface_wrapper->gps_interface.delete_aiding_data = wrapped_gps_interface->delete_aiding_data;
+#endif
     interface_wrapper->gps_interface.set_position_mode = wrapped_gps_interface->set_position_mode;
     interface_wrapper->gps_interface.get_extension = wrapped_gps_interface->get_extension;
     interface_wrapper->wrapped_gps_interface = wrapped_gps_interface;

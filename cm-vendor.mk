@@ -57,6 +57,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # eglCreateWindowSurface behavior to the old one.
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
 
+# CyanogenMod 11.0 changed GpsAidingData in
+# "hardware/libhardware/include/hardware/gps.h" from uint16_t to uint32_t.
+MTK_GPS_WRAPPER_GPS_HAL_USES_UINT32_AIDING_DATA := true
+
 # Wrapper for the proprietary MediaTek GPS HAL module, needed to adjust its API
 # to the standard GPS HAL module API.
 PRODUCT_PACKAGES += \
