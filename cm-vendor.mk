@@ -53,6 +53,26 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	gps.fp1
 
+# Helper command to add and remove the wlan0 and p2p0 net interfaces (as the
+# wlan kernel module does not add them automatically when loaded, so the module
+# is kept always loaded and the interfaces are added and removed when needed).
+PRODUCT_PACKAGES += \
+	mt6628_wlan_iface_ctrl
+
+# Parameters used by the Wi-Fi HAL to launch a system service to add and remove
+# the wlan0 and p2p0 net interfaces when needed.
+WIFI_DRIVER_STATE_CTRL_PROP_NAME := wlan_iface_ctrl
+WIFI_DRIVER_STATE_ON := add
+WIFI_DRIVER_STATE_OFF := remove
+
+WPA_SUPPLICANT_VERSION := VER_0_8_X
+BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := wpa_supplicant_8_private_lib_fp1
+
+# The net interface to be used by the Wi-Fi system.
+PRODUCT_PROPERTY_OVERRIDES += \
+	wifi.interface=wlan0
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, the FOSS device tree plus this proprietary vendor tree do not
@@ -65,6 +85,8 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
 	frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
 	frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
-	frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml
+	frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
+	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+	frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml
 
 endif
