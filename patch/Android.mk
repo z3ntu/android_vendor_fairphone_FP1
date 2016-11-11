@@ -15,17 +15,31 @@
 
 # vendor tree counterpart for device/fairphone/fp1/patch/Android.mk
 
-.PHONY: patch-source-tree-for-fp1-vendor reverse-patch-source-tree-for-fp1-vendor
+.PHONY: patch-source-tree-for-fp1-vendor reverse-patch-source-tree-for-fp1-vendor abort-if-build-system-was-patched-vendor abort-if-build-system-was-reverse-patched-vendor
 
 ifneq ($(filter fp1,$(TARGET_DEVICE)),)
     -include patch-source-tree-for-fp1-vendor
+    -include abort-if-build-system-was-patched-vendor
 else
     -include reverse-patch-source-tree-for-fp1-vendor
+    -include abort-if-build-system-was-reverse-patched-vendor
 endif
 
 # add-nvram-user.patch is unneeded for CyanogenMod 11.0.
 patch-source-tree-for-fp1-vendor:
 	$(call patch-repository,system/core,vendor/fairphone/fp1/patch/add-xlog-buf-printf.patch)
+	$(call patch-repository,hardware/libhardware_legacy,vendor/fairphone/fp1/patch/add-support-to-wifi-hal-to-add-and-remove-interfaces.patch,$(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED))
 
 reverse-patch-source-tree-for-fp1-vendor:
 	$(call reverse-patch-repository,system/core,vendor/fairphone/fp1/patch/add-xlog-buf-printf.patch)
+	$(call reverse-patch-repository,hardware/libhardware_legacy,vendor/fairphone/fp1/patch/add-support-to-wifi-hal-to-add-and-remove-interfaces.patch,$(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED))
+
+abort-if-build-system-was-patched-vendor: | patch-source-tree-for-fp1-vendor
+	$(if $(wildcard $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)), \
+	    $(shell rm -f $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)) \
+	    $(error The build system was patched. Launch again the build))
+
+abort-if-build-system-was-reverse-patched-vendor: | reverse-patch-source-tree-for-fp1-vendor
+	$(if $(wildcard $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)), \
+	    $(shell rm -f $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)) \
+	    $(error The build system was reverse patched. Launch again the build))
