@@ -6,6 +6,29 @@ on post-fs
 
 
 
+    # mtk_hif_sdio.ko and mtk_stp_wmt.ko are needed to be able to load other
+    # wireless combo chip related modules, like mtk_stp_gps.ko.
+    # mtk_stp_uart.ko seems to be needed to communicate with the wireless combo
+    # chip.
+    insmod /system/lib/modules/mtk_hif_sdio.ko
+    insmod /system/lib/modules/mtk_stp_wmt.ko
+    insmod /system/lib/modules/mtk_stp_uart.ko
+    insmod /system/lib/modules/mtk_stp_gps.ko
+
+    # Needed by 6620_launcher.
+    exec /sbin/mknod-fp1 /dev/stpwmt c 190 0
+
+    chown system system /dev/stpwmt
+    chmod 0660 /dev/stpwmt
+
+    # Needed by libmnlp_mt6628.
+    exec /sbin/mknod-fp1 /dev/stpgps c 191 0
+
+    chown gps gps /dev/stpgps
+    chmod 0660 /dev/stpgps
+
+
+
 service pvrsrvctl /system/vendor/bin/pvrsrvctl --start
     class main
     user root
@@ -27,3 +50,31 @@ service memsicd3416x /system/bin/memsicd3416x
     class main
     user system
     group system
+
+
+
+# Wireless combo chip initialization daemon.
+# Use class core so it is started before services in classes main or default
+# that could need it.
+service 6620_launcher /system/bin/logwrapper /system/bin/6620_launcher -p /system/etc/firmware/
+    class core
+    user system
+    group system
+
+
+
+# GPS main daemon.
+# It is started when needed by gps.default.so; the socket is used for
+# communication between them. mnld will, in turn, launch the specific GPS daemon
+# for the chipset, which is libmnlp_mt6628.
+#
+# Group "inet" is needed to be able to create a debug socket for libmnlp_mt6628,
+# although it is not required for the daemon to work, so it is not included.
+# Group "sdcard_rw" is needed to be able to write the GPS log to the sdcard in
+# "/sdcard/GPS.LOG", although it is not required for the daemon to work, so it
+# is not included.
+service mnld /system/xbin/mnld
+    user gps
+    group gps nvram misc
+    socket mnld stream 660 gps gps
+    disabled
