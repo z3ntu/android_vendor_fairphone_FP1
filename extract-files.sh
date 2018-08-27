@@ -241,12 +241,44 @@ GPS=" \
 
 
 
+AUDIO_POLICY_DEPENDENCIES=" \
+    system/lib/libaed.so"
+
+LIBBLISRC_DEPENDENCIES=" \
+    system/lib/libmtk_drvb.so"
+
+AUDIO_PRIMARY_DEPENDENCIES=" \
+    $LIBBLISRC_DEPENDENCIES \
+    system/lib/libblisrc.so \
+    system/lib/libspeech_enh_lib.so"
+
+LIBAUDIOCOMPENSATIONFILTER_DEPENDENCIES=" \
+    system/lib/libbessound_mtk.so"
+
+AUDIO=" \
+    $AUDIO_POLICY_DEPENDENCIES \
+    system/lib/hw/audio_policy.default.so:system/lib/hw/audio_policy.mt6589.so \
+    $AUDIO_PRIMARY_DEPENDENCIES \
+    system/lib/libaudio.primary.default.so:system/lib/hw/audio.primary.mt6589.so \
+    system/lib/libaudiocustparam.so \
+    system/lib/libaudiosetting.so \
+    $LIBAUDIOCOMPENSATIONFILTER_DEPENDENCIES \
+    system/lib/libaudiocompensationfilter.so \
+    system/etc/audio_policy.conf \
+    system/etc/audio_effects.conf"
+
+
+
+
+
+
 ALL_FILES=" \
     $GRAPHICS \
     $NVRAM \
     $SENSORS \
     $WIRELESS_COMBO_CHIP \
-    $GPS"
+    $GPS \
+    $AUDIO"
 
 
 
@@ -272,15 +304,25 @@ echo -n "PRODUCT_COPY_FILES +=" >> $MK_FILE
 for FILE in $FILES; do
     mkdir --parents "$(dirname $VENDOR_DIR/proprietary/$FILE)"
 
+    # Possibility to rename files ("SRCFILE:DSTFILE")
+    if [[ $FILE = *":"* ]]; then
+        FILEARR=(${FILE//:/ })
+        FILE_SRC=${FILEARR[0]}
+        FILE_DST=${FILEARR[1]}
+    else
+        FILE_SRC=$FILE
+        FILE_DST=$FILE
+    fi
+
     # If a parameter is given it is assumed to be a root directory to copy the
     # files from; otherwise, the files are pulled from the device using ADB.
     if [ "$#" -eq "1" ]; then
-        cp "$1/$FILE" "$VENDOR_DIR/proprietary/$FILE"
+        cp "$1/$FILE_SRC" "$VENDOR_DIR/proprietary/$FILE_DST"
     else
-        adb pull "$FILE" "$VENDOR_DIR/proprietary/$FILE"
+        adb pull "$FILE_SRC" "$VENDOR_DIR/proprietary/$FILE_DST"
     fi
 
-    echo -n " \\"$'\n'"	vendor/fairphone/fp1/proprietary/$FILE:$FILE" >> $MK_FILE
+    echo -n " \\"$'\n'"	vendor/fairphone/fp1/proprietary/$FILE_DST:$FILE_DST" >> $MK_FILE
 done
 
 echo "" >> $MK_FILE
