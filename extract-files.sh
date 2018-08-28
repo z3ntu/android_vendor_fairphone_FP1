@@ -272,13 +272,22 @@ AUDIO=" \
 
 
 
+BLUETOOTH=" \
+    system/lib/libbluetoothdrv.so \
+    system/lib/libbluetooth_mtk.so"
+
+
+
+
+
 ALL_FILES=" \
     $GRAPHICS \
     $NVRAM \
     $SENSORS \
     $WIRELESS_COMBO_CHIP \
     $GPS \
-    $AUDIO"
+    $AUDIO \
+    $BLUETOOTH"
 
 
 

@@ -14,6 +14,7 @@ on post-fs
     insmod /system/lib/modules/mtk_stp_wmt.ko
     insmod /system/lib/modules/mtk_stp_uart.ko
     insmod /system/lib/modules/mtk_stp_gps.ko
+    insmod /system/lib/modules/mtk_stp_bt.ko
     insmod /system/lib/modules/mtk_wmt_wifi.ko
 
     # Needed by 6620_launcher.
@@ -27,6 +28,12 @@ on post-fs
 
     chown gps gps /dev/stpgps
     chmod 0660 /dev/stpgps
+
+    # Needed for Bluetooth
+    exec /sbin/mknod-fp1 /dev/stpbt c 192 0
+
+    chmod 0660 /dev/stpbt
+    chown bluetooth radio /dev/stpbt
 
     # Needed to enable and disable the Wi-Fi.
     exec /sbin/mknod-fp1 /dev/wmtWifi c 153 0
